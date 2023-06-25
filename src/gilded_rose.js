@@ -11,7 +11,15 @@ class Shop {
         this.items = items;
     }
     updateQuality() {
-        // for each item in the shop.items array
+        // Aged Brie - increases in quality, not more than 50
+        // Backstage passes - increase in quality by different factors, not more than 50, drop to 0
+        // Everything else - degrades
+        // Conjured - degrade twice as fast
+        // Sulfuras - do nothing
+
+        // const guildedRose = new Shop([new Item("foo", 5, 5)])
+        // guildedRose.updateQuality()
+
         for (let i = 0; i < this.items.length; i++) {
             // if item's name is not 'Aged Brie' or 'Backstage passes to a TAFKAL80ETC concert'
             // if item's quality > 0
@@ -34,27 +42,19 @@ class Shop {
             // else if name is 'Backstage passes to a TAFKAL80ETC concert' then quality = 0
             // else if name is 'Aged Brie' and quality < 50 then quality += 1
             if (this.items[i].name != "Aged Brie" && this.items[i].name != "Backstage passes to a TAFKAL80ETC concert") {
-                if (this.items[i].quality > 0) {
-                    if (this.items[i].name == "Conjured") {
-                        this.items[i].quality = this.items[i].quality - 2;
-                    } else if (this.items[i].name != "Sulfuras, Hand of Ragnaros") {
-                        this.items[i].quality = this.items[i].quality - 1;
-                    }
+                if (this.items[i].name == "Conjured") {
+                    this.incrementQuality(i, -2);
+                } else if (this.items[i].name != "Sulfuras, Hand of Ragnaros") {
+                    this.incrementQuality(i, -1);
                 }
             } else {
-                if (this.items[i].quality < 50) {
-                    this.items[i].quality = this.items[i].quality + 1;
-                    if (this.items[i].name == "Backstage passes to a TAFKAL80ETC concert") {
-                        if (this.items[i].sellIn < 11) {
-                            if (this.items[i].quality < 50) {
-                                this.items[i].quality = this.items[i].quality + 1;
-                            }
-                        }
-                        if (this.items[i].sellIn < 6) {
-                            if (this.items[i].quality < 50) {
-                                this.items[i].quality = this.items[i].quality + 1;
-                            }
-                        }
+                this.incrementQuality(i, 1);
+                if (this.items[i].name == "Backstage passes to a TAFKAL80ETC concert") {
+                    if (this.items[i].sellIn < 11) {
+                        this.incrementQuality(i, 1);
+                    }
+                    if (this.items[i].sellIn < 6) {
+                        this.incrementQuality(i, 1);
                     }
                 }
             }
@@ -64,29 +64,24 @@ class Shop {
             if (this.items[i].sellIn < 0) {
                 if (this.items[i].name != "Aged Brie") {
                     if (this.items[i].name != "Backstage passes to a TAFKAL80ETC concert") {
-                        if (this.items[i].quality > 0) {
-                            if (this.items[i].name == "Conjured") {
-                                if (this.items[i].quality > 2) {
-                                    this.items[i].quality = this.items[i].quality - 2;
-                                } else {
-                                    this.items[i].quality = this.items[i].quality - this.items[i].quality;
-                                }
-                            } else if (this.items[i].name != "Sulfuras, Hand of Ragnaros") {
-                                this.items[i].quality = this.items[i].quality - 1;
-                            }
+                        if (this.items[i].name == "Conjured") {
+                            this.incrementQuality(i, -2);
+                        } else if (this.items[i].name != "Sulfuras, Hand of Ragnaros") {
+                            this.incrementQuality(i, -1);
                         }
                     } else {
-                        this.items[i].quality = this.items[i].quality - this.items[i].quality;
+                        this.incrementQuality(i, -this.items[i].quality);
                     }
                 } else {
-                    if (this.items[i].quality < 50) {
-                        this.items[i].quality = this.items[i].quality + 1;
-                    }
+                    this.incrementQuality(i, 1);
                 }
             }
         }
-
         return this.items;
+    }
+
+    incrementQuality(index, amount) {
+        this.items[index].quality + amount > 50 ? (this.items[index].quality = 50) : this.items[index].quality + amount < 0 ? (this.items[index].quality = 0) : (this.items[index].quality += amount);
     }
 }
 
