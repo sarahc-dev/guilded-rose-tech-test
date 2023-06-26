@@ -112,4 +112,9 @@ describe("Gilded Rose", function () {
         expect(items[0].sellIn).toBe(-2);
         expect(items[0].quality).toBe(0);
     });
+
+    it("initialises a shop with an empty array", () => {
+        const guildedRose = new Shop()
+        expect(guildedRose.items).toEqual([])
+    })
 });
