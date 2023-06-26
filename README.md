@@ -53,9 +53,9 @@ Feel free to **make any changes to the UpdateQuality method** and add any new co
 
 First of all I highlighted in bold the sections of the problem that detail what is being asked. I then went through the code and made comments in sudo code to understand what was happening.
 
-I then added green passing tests for the exising functionality (commit 4fe53349debd61ee42e2494d58a126ef7d2110b8). Now I can add code and refactor and know I have not broken anything.
+I then added green passing tests for the exising functionality (commit 4fe53349debd61ee42e2494d58a126ef7d2110b8). Now I can add code and refactor and be confident I have not broken anything.
 
-I then wrote out the descriptions of the tests I would need for the "Conjured" items - based on the existing requirements I determined that if they should degrade in quality twice as fast as normal items then when sellIn is greater than 0 they should degrade by 2 and when sellIn is less than 0 they should degrade by 4. The quality should still never be negative.
+I then wrote out the descriptions of the tests I would need for the "Conjured" items - based on the existing requirements I determined that if they should degrade in quality twice as fast as normal items then when sellIn is greater than 0 they should degrade by 2 and when sellIn is less than 0 they should degrade by 4. The quality should still never be negative as per the original specification.
 
 ```javascript
 it("should degrade the quality of conjured items twice as fast before sellIn is 0", function() {})
@@ -63,13 +63,14 @@ it("should degrade the quality of conjured items by 4 when sellIn is negative", 
 it("quality of conjured items should not be negative", function() {})
 ```
 
-I initially added code in line with the existing code to pass these tests (commit 9b6b6eaab7f4b9a7c284386f3051accfae831a6c). Following the red-green-refactor - I have refactored the code afterwards, to make it easier in future to update the system and add new items.
+I initially added code in line with the existing code to pass these tests (commit 9b6b6eaab7f4b9a7c284386f3051accfae831a6c). Following the red-green-refactor process - I have refactored the code afterwards, to make it easier in future to update the system and add new items.
 
-Started to refactor repeated code. Change all lines where quality incremented into function.
-```
+I started by pulling out the often repeated code to update the quality into it's own function. I amended all lines of code to use this new function.
+
+```javascript
 incrementQuality(index, amount) {
-        this.items[index].quality += amount;
-    }
+    this.items[index].quality += amount;
+}
 ```
 
-Then added checking if greater than 50 or less than 0 and removed these ifs.
+I then added the ability for this function to handle cases where the quality becomes greater than 50 or less than 0 and was able to remove all of the if statements handling this, and still pass all the tests. Finally, I decided to change the remaining if statements that handle the functionality for particular products into a switch statement. This will make it much easier in future to update the system to add further products and in my opinion is easier to read.
